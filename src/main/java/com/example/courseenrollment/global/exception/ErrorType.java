@@ -1,0 +1,39 @@
+package com.example.courseenrollment.global.exception;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
+
+@Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public enum ErrorType {
+
+    /**
+     * HTTP 400 (BAD REQUEST)
+     */
+    REQUEST_VALIDATION_EXCEPTION(HttpStatus.BAD_REQUEST, "요청 값이 올바르지 않습니다."),
+
+    /**
+     * HTTP 403 (FORBIDDEN)
+     */
+
+    /**
+     * HTTP 404 (NOT FOUND)
+     */
+
+    /**
+     * HTTP 409 (CONFLICT)
+     */
+
+    /**
+     * HTTP 500 (INTERNAL SERVER ERROR)
+     */INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 서버 에러가 발생했습니다.");
+
+    private final HttpStatus httpStatus;
+    private final String message;
+
+    public int getHttpStatusCode() {
+        return httpStatus.value();
+    }
+}
