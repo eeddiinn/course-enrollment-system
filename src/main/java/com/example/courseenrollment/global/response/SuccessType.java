@@ -12,11 +12,12 @@ public enum SuccessType {
     /**
      * HTTP 200 (OK)
      */
-    PROCESS_SUCCESS(HttpStatus.OK, "요청이 성공적으로 처리되었습니다.");
+    PROCESS_SUCCESS(HttpStatus.OK, "요청이 성공적으로 처리되었습니다."),
 
     /**
      * HTTP 201 (CREATED)
      */
+    CREATE_COURSE_SUCCESS(HttpStatus.CREATED, "강의가 등록되었습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
