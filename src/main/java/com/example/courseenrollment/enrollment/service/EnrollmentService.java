@@ -4,6 +4,7 @@ import com.example.courseenrollment.course.domain.Course;
 import com.example.courseenrollment.course.domain.CourseStatus;
 import com.example.courseenrollment.course.repository.CourseRepository;
 import com.example.courseenrollment.enrollment.domain.Enrollment;
+import com.example.courseenrollment.enrollment.domain.EnrollmentStatus;
 import com.example.courseenrollment.enrollment.dto.CreateEnrollmentResponse;
 import com.example.courseenrollment.enrollment.repository.EnrollmentRepository;
 import com.example.courseenrollment.global.exception.CustomException;
@@ -39,7 +40,9 @@ public class EnrollmentService {
             throw new CustomException(ErrorType.COURSE_NOT_OPEN);
         }
 
-        if (enrollmentRepository.existsByStudentIdAndCourseId(userId, courseId)) {
+        boolean alreadyEnrolled = enrollmentRepository.existsByStudentIdAndCourseIdAndStatusNot(userId, courseId, EnrollmentStatus.CANCELLED);
+
+        if (alreadyEnrolled) {
             throw new CustomException(ErrorType.ALREADY_ENROLLED);
         }
 
@@ -53,8 +56,6 @@ public class EnrollmentService {
                                     .build();
 
         Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
-
-        course.increaseEnrolledCount();
 
         return new CreateEnrollmentResponse(savedEnrollment.getId());
     }
