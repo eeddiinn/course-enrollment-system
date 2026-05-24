@@ -27,7 +27,7 @@ public class CourseController {
 
     @PatchMapping("/{courseId}/status")
     public ResponseEntity<ApiResponse<UpdateCourseStatusResponse>> updateCourseStatus(@RequestHeader("userId") Long userId, @PathVariable Long courseId, @Valid @RequestBody UpdateCourseStatusRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(SuccessType.UPDATE_COURSE_STATUS_SUCCESS, courseService.updateCourseStatus(userId, courseId, request)));
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.UPDATE_COURSE_STATUS_SUCCESS, courseService.updateCourseStatus(userId, courseId, request)));
     }
 
     @GetMapping
