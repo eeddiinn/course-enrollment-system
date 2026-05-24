@@ -47,4 +47,9 @@ public class Enrollment extends BaseTimeEntity {
         this.course = course;
         this.status = EnrollmentStatus.PENDING;
     }
+
+    public void confirm(LocalDateTime confirmedAt) {
+        this.status = EnrollmentStatus.CONFIRMED;
+        this.confirmedAt = confirmedAt;
+    }
 }

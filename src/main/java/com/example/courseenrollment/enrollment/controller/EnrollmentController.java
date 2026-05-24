@@ -1,5 +1,6 @@
 package com.example.courseenrollment.enrollment.controller;
 
+import com.example.courseenrollment.enrollment.dto.ConfirmEnrollmentResponse;
 import com.example.courseenrollment.enrollment.dto.CreateEnrollmentResponse;
 import com.example.courseenrollment.enrollment.service.EnrollmentService;
 import com.example.courseenrollment.global.response.ApiResponse;
@@ -19,5 +20,10 @@ public class EnrollmentController {
     @PostMapping("/courses/{courseId}/enrollments")
     public ResponseEntity<ApiResponse<CreateEnrollmentResponse>> createEnrollment(@RequestHeader("userId") Long userId, @PathVariable Long courseId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(SuccessType.CREATE_ENROLLMENT_SUCCESS, enrollmentService.createEnrollment(userId, courseId)));
+    }
+
+    @PatchMapping("/enrollments/{enrollmentId}/confirm")
+    public ResponseEntity<ApiResponse<ConfirmEnrollmentResponse>> confirmEnrollment(@RequestHeader("userId") Long userId, @PathVariable Long enrollmentId) {
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.ENROLLMENT_CONFIRM_SUCCESS,enrollmentService.confirmEnrollment(userId, enrollmentId)));
     }
 }

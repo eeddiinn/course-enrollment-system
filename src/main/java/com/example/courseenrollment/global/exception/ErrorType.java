@@ -22,18 +22,21 @@ public enum ErrorType {
     COURSE_CREATE_FORBIDDEN(HttpStatus.FORBIDDEN, "강의 등록 권한이 없습니다."),
     COURSE_STATUS_CHANGE_FORBIDDEN(HttpStatus.FORBIDDEN, "강의 상태 변경 권한이 없습니다."),
     ENROLLMENT_CREATE_FORBIDDEN(HttpStatus.FORBIDDEN, "수강 신청 권한이 없습니다."),
+    ENROLLMENT_CONFIRM_FORBIDDEN(HttpStatus.FORBIDDEN, "결제 확정 권한이 없습니다."),
 
     /**
      * HTTP 404 (NOT FOUND)
      */
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
     COURSE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 강의입니다."),
+    ENROLLMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 수강 신청입니다."),
 
     /**
      * HTTP 409 (CONFLICT)
      */
     ALREADY_ENROLLED(HttpStatus.CONFLICT, "이미 신청한 강의입니다."),
     COURSE_CAPACITY_FULL(HttpStatus.CONFLICT, "수강 정원이 마감되었습니다."),
+    ENROLLMENT_CONFIRM_NOT_ALLOWED(HttpStatus.CONFLICT, "결제 확정할 수 없는 수강 신청 상태입니다."),
 
     /**
      * HTTP 500 (INTERNAL SERVER ERROR)
