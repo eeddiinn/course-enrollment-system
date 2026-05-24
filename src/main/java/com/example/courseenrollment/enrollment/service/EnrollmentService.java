@@ -5,10 +5,7 @@ import com.example.courseenrollment.course.domain.CourseStatus;
 import com.example.courseenrollment.course.repository.CourseRepository;
 import com.example.courseenrollment.enrollment.domain.Enrollment;
 import com.example.courseenrollment.enrollment.domain.EnrollmentStatus;
-import com.example.courseenrollment.enrollment.dto.CancelEnrollmentResponse;
-import com.example.courseenrollment.enrollment.dto.ConfirmEnrollmentResponse;
-import com.example.courseenrollment.enrollment.dto.CreateEnrollmentResponse;
-import com.example.courseenrollment.enrollment.dto.GetMyEnrollmentListResponse;
+import com.example.courseenrollment.enrollment.dto.*;
 import com.example.courseenrollment.enrollment.repository.EnrollmentRepository;
 import com.example.courseenrollment.global.exception.CustomException;
 import com.example.courseenrollment.global.exception.ErrorType;
@@ -24,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -158,6 +156,34 @@ public class EnrollmentService {
                 ));
 
         return PageResponse.from(enrollments);
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetCourseStudentListResponse> getCourseStudents(Long userId, Long courseId) {
+        User creator = userRepository.findById(userId)
+                           .orElseThrow(() -> new CustomException(ErrorType.USER_NOT_FOUND));
+
+        if (creator.getRole() != UserRole.CREATOR) {
+            throw new CustomException(ErrorType.COURSE_STUDENT_LIST_GET_FORBIDDEN);
+        }
+
+        Course course = courseRepository.findById(courseId)
+                            .orElseThrow(() -> new CustomException(ErrorType.COURSE_NOT_FOUND));
+
+        if (!course.getCreator().getId().equals(userId)) {
+            throw new CustomException(ErrorType.COURSE_STUDENT_LIST_GET_FORBIDDEN);
+        }
+
+        List<Enrollment> enrollments = enrollmentRepository.findAllByCourseIdAndStatusOrderByConfirmedAtDesc(courseId, EnrollmentStatus.CONFIRMED);
+
+        return enrollments.stream()
+                   .map(enrollment -> new GetCourseStudentListResponse(
+                       enrollment.getId(),
+                       enrollment.getStudent().getId(),
+                       enrollment.getStudent().getName(),
+                       enrollment.getConfirmedAt()
+                   ))
+                   .toList();
     }
 
     // 취소 가능 기간인지 검증

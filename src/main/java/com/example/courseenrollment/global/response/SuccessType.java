@@ -19,6 +19,7 @@ public enum SuccessType {
     ENROLLMENT_CONFIRM_SUCCESS(HttpStatus.OK, "결제가 확정되었습니다."),
     ENROLLMENT_CANCEL_SUCCESS(HttpStatus.OK, "수강 신청이 취소되었습니다."),
     GET_ENROLLMENT_LIST_SUCCESS(HttpStatus.OK, "내 수강 신청 목록 조회에 성공했습니다."),
+    GET_COURSE_STUDENT_LIST_SUCCESS(HttpStatus.OK, "강의 수강생 목록 조회에 성공했습니다."),
 
 
     /**
