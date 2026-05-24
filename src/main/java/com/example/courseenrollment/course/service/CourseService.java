@@ -2,19 +2,18 @@ package com.example.courseenrollment.course.service;
 
 import com.example.courseenrollment.course.domain.Course;
 import com.example.courseenrollment.course.domain.CourseStatus;
-import com.example.courseenrollment.course.dto.CreateCourseRequest;
-import com.example.courseenrollment.course.dto.CreateCourseResponse;
-import com.example.courseenrollment.course.dto.UpdateCourseStatusRequest;
-import com.example.courseenrollment.course.dto.UpdateCourseStatusResponse;
+import com.example.courseenrollment.course.dto.*;
 import com.example.courseenrollment.course.repository.CourseRepository;
 import com.example.courseenrollment.global.exception.CustomException;
 import com.example.courseenrollment.global.exception.ErrorType;
 import com.example.courseenrollment.user.domain.User;
 import com.example.courseenrollment.user.domain.UserRole;
 import com.example.courseenrollment.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -80,5 +79,27 @@ public class CourseService {
         }
 
         throw new CustomException(ErrorType.INVALID_COURSE_STATUS);
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetCourseListResponse> getCourses(CourseStatus status) {
+        List<Course> courses;
+
+        if (status == null) {
+            courses = courseRepository.findAll();
+        } else {
+            courses = courseRepository.findAllByStatus(status);
+        }
+
+        return courses.stream()
+                   .map(course -> new GetCourseListResponse(
+                       course.getId(),
+                       course.getTitle(),
+                       course.getPrice(),
+                       course.getStatus(),
+                       course.getStartAt(),
+                       course.getEndAt()
+                   ))
+                   .toList();
     }
 }
