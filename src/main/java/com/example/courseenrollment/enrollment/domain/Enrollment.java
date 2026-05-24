@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Entity
-@Table(name = "enrollments")
+@Table(name = "enrollments", uniqueConstraints = {@UniqueConstraint(columnNames = {"student_id", "course_id"})})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Enrollment extends BaseTimeEntity {
 

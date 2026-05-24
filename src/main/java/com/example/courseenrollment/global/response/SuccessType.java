@@ -21,7 +21,8 @@ public enum SuccessType {
     /**
      * HTTP 201 (CREATED)
      */
-    CREATE_COURSE_SUCCESS(HttpStatus.CREATED, "강의가 등록되었습니다.");
+    CREATE_COURSE_SUCCESS(HttpStatus.CREATED, "강의가 등록되었습니다."),
+    CREATE_ENROLLMENT_SUCCESS(HttpStatus.CREATED, "수강 신청이 완료되었습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
