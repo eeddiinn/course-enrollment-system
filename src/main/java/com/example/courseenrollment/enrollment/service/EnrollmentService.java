@@ -60,6 +60,8 @@ public class EnrollmentService {
 
         Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
 
+        course.increaseEnrolledCount();
+
         return new CreateEnrollmentResponse(savedEnrollment.getId());
     }
 
@@ -83,17 +85,8 @@ public class EnrollmentService {
             throw new CustomException(ErrorType.ENROLLMENT_CONFIRM_NOT_ALLOWED);
         }
 
-        Course course = courseRepository.findByIdWithLock(enrollment.getCourse().getId())
-                            .orElseThrow(() -> new CustomException(ErrorType.COURSE_NOT_FOUND));
-
-        if (course.getEnrolledCount() >= course.getCapacity()) {
-            throw new CustomException(ErrorType.COURSE_CAPACITY_FULL);
-        }
-
         enrollment.confirm(LocalDateTime.now());
-        course.increaseEnrolledCount();
 
-        return new ConfirmEnrollmentResponse(enrollment.getId(), enrollment.getStatus()
-        );
+        return new ConfirmEnrollmentResponse(enrollment.getId(), enrollment.getStatus());
     }
 }
