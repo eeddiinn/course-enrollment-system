@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
@@ -16,4 +17,6 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select e from Enrollment e where e.id = :enrollmentId")
     Optional<Enrollment> findByIdWithLock(Long enrollmentId);
+
+    List<Enrollment> findAllByStudentIdOrderByCreatedAtDesc(Long studentId);
 }

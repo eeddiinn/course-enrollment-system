@@ -68,19 +68,6 @@ public class CourseService {
         return new UpdateCourseStatusResponse(course.getId(), course.getStatus());
     }
 
-    // 현재 상태에서 요청한 상태로 바꿀 수 있는지
-    private void validateCourseStatusChange(CourseStatus currentStatus, CourseStatus nextStatus) {
-        if (currentStatus == CourseStatus.DRAFT && nextStatus == CourseStatus.OPEN) {
-            return;
-        }
-
-        if (currentStatus == CourseStatus.OPEN && nextStatus == CourseStatus.CLOSED) {
-            return;
-        }
-
-        throw new CustomException(ErrorType.INVALID_COURSE_STATUS);
-    }
-
     @Transactional(readOnly = true)
     public List<GetCourseListResponse> getCourses(CourseStatus status) {
         List<Course> courses;
@@ -121,5 +108,18 @@ public class CourseService {
             course.getStartAt(),
             course.getEndAt()
         );
+    }
+
+    // 현재 상태에서 요청한 상태로 바꿀 수 있는지
+    private void validateCourseStatusChange(CourseStatus currentStatus, CourseStatus nextStatus) {
+        if (currentStatus == CourseStatus.DRAFT && nextStatus == CourseStatus.OPEN) {
+            return;
+        }
+
+        if (currentStatus == CourseStatus.OPEN && nextStatus == CourseStatus.CLOSED) {
+            return;
+        }
+
+        throw new CustomException(ErrorType.INVALID_COURSE_STATUS);
     }
 }

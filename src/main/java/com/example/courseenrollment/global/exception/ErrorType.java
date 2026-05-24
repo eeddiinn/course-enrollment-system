@@ -26,6 +26,7 @@ public enum ErrorType {
     ENROLLMENT_CREATE_FORBIDDEN(HttpStatus.FORBIDDEN, "수강 신청 권한이 없습니다."),
     ENROLLMENT_CONFIRM_FORBIDDEN(HttpStatus.FORBIDDEN, "결제 확정 권한이 없습니다."),
     ENROLLMENT_CANCEL_FORBIDDEN(HttpStatus.FORBIDDEN, "수강 신청 취소 권한이 없습니다."),
+    ENROLLMENT_LIST_GET_FORBIDDEN(HttpStatus.FORBIDDEN, "수강 신청 목록 조회 권한이 없습니다."),
 
     /**
      * HTTP 404 (NOT FOUND)

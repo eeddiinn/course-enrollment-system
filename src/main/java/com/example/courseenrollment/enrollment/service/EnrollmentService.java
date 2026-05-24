@@ -8,6 +8,7 @@ import com.example.courseenrollment.enrollment.domain.EnrollmentStatus;
 import com.example.courseenrollment.enrollment.dto.CancelEnrollmentResponse;
 import com.example.courseenrollment.enrollment.dto.ConfirmEnrollmentResponse;
 import com.example.courseenrollment.enrollment.dto.CreateEnrollmentResponse;
+import com.example.courseenrollment.enrollment.dto.GetMyEnrollmentListResponse;
 import com.example.courseenrollment.enrollment.repository.EnrollmentRepository;
 import com.example.courseenrollment.global.exception.CustomException;
 import com.example.courseenrollment.global.exception.ErrorType;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -129,6 +131,31 @@ public class EnrollmentService {
         course.decreaseEnrolledCount();
 
         return new CancelEnrollmentResponse(enrollment.getId(), enrollment.getStatus());
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetMyEnrollmentListResponse> getMyEnrollments(Long userId) {
+        User student = userRepository.findById(userId)
+                           .orElseThrow(() -> new CustomException(ErrorType.USER_NOT_FOUND));
+
+        if (student.getRole() != UserRole.STUDENT) {
+            throw new CustomException(ErrorType.ENROLLMENT_LIST_GET_FORBIDDEN);
+        }
+
+        List<Enrollment> enrollments = enrollmentRepository.findAllByStudentIdOrderByCreatedAtDesc(userId);
+
+        return enrollments.stream()
+                   .map(enrollment -> new GetMyEnrollmentListResponse(
+                       enrollment.getId(),
+                       enrollment.getCourse().getId(),
+                       enrollment.getCourse().getTitle(),
+                       enrollment.getCourse().getPrice(),
+                       enrollment.getStatus(),
+                       enrollment.getCreatedAt(),
+                       enrollment.getConfirmedAt(),
+                       enrollment.getCancelledAt()
+                   ))
+                   .toList();
     }
 
     // 취소 가능 기간인지 검증
