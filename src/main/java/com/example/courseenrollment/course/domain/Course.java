@@ -61,4 +61,8 @@ public class Course extends BaseTimeEntity {
         this.endAt = endAt;
         this.status = CourseStatus.DRAFT;
     }
+
+    public void changeStatus(CourseStatus status) {
+        this.status = status;
+    }
 }

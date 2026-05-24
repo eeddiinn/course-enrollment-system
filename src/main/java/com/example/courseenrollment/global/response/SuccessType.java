@@ -13,6 +13,7 @@ public enum SuccessType {
      * HTTP 200 (OK)
      */
     PROCESS_SUCCESS(HttpStatus.OK, "요청이 성공적으로 처리되었습니다."),
+    UPDATE_COURSE_STATUS_SUCCESS(HttpStatus.OK, "강의 상태가 변경되었습니다."),
 
     /**
      * HTTP 201 (CREATED)

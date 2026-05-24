@@ -2,6 +2,8 @@ package com.example.courseenrollment.course.controller;
 
 import com.example.courseenrollment.course.dto.CreateCourseRequest;
 import com.example.courseenrollment.course.dto.CreateCourseResponse;
+import com.example.courseenrollment.course.dto.UpdateCourseStatusRequest;
+import com.example.courseenrollment.course.dto.UpdateCourseStatusResponse;
 import com.example.courseenrollment.course.service.CourseService;
 import com.example.courseenrollment.global.response.ApiResponse;
 import com.example.courseenrollment.global.response.SuccessType;
@@ -21,5 +23,10 @@ public class CourseController {
     @PostMapping
     public ResponseEntity<ApiResponse<CreateCourseResponse>> createCourse(@RequestHeader("userId") Long userId, @Valid @RequestBody CreateCourseRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(SuccessType.CREATE_COURSE_SUCCESS, courseService.createCourse(userId, request)));
+    }
+
+    @PatchMapping("/{courseId}/status")
+    public ResponseEntity<ApiResponse<UpdateCourseStatusResponse>> updateCourseStatus(@RequestHeader("userId") Long userId, @PathVariable Long courseId, @Valid @RequestBody UpdateCourseStatusRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(SuccessType.UPDATE_COURSE_STATUS_SUCCESS, courseService.updateCourseStatus(userId, courseId, request)));
     }
 }

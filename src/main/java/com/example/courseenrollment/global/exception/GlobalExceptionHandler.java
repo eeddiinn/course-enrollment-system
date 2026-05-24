@@ -3,6 +3,7 @@ package com.example.courseenrollment.global.exception;
 import com.example.courseenrollment.global.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -49,5 +50,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                    .status(INTERNAL_SERVER_ERROR.getHttpStatus())
                    .body(ApiResponse.error(INTERNAL_SERVER_ERROR));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    protected ResponseEntity<ApiResponse<?>> handleHttpMessageNotReadableException(
+        HttpMessageNotReadableException e
+    ) {
+        return ResponseEntity
+                   .status(ErrorType.INVALID_COURSE_STATUS.getHttpStatus())
+                   .body(ApiResponse.error(ErrorType.INVALID_COURSE_STATUS));
     }
 }
