@@ -102,4 +102,24 @@ public class CourseService {
                    ))
                    .toList();
     }
+
+    @Transactional(readOnly = true)
+    public GetCourseDetailResponse getCourse(Long courseId) {
+        Course course = courseRepository.findById(courseId)
+                            .orElseThrow(() -> new CustomException(ErrorType.COURSE_NOT_FOUND));
+
+        return new GetCourseDetailResponse(
+            course.getId(),
+            course.getCreator().getId(),
+            course.getCreator().getName(),
+            course.getTitle(),
+            course.getDescription(),
+            course.getPrice(),
+            course.getCapacity(),
+            course.getEnrolledCount(),
+            course.getStatus(),
+            course.getStartAt(),
+            course.getEndAt()
+        );
+    }
 }

@@ -15,6 +15,7 @@ public enum SuccessType {
     PROCESS_SUCCESS(HttpStatus.OK, "요청이 성공적으로 처리되었습니다."),
     UPDATE_COURSE_STATUS_SUCCESS(HttpStatus.OK, "강의 상태가 변경되었습니다."),
     GET_COURSE_LIST_SUCCESS(HttpStatus.OK, "강의 목록 조회에 성공했습니다."),
+    GET_COURSE_DETAIL_SUCCESS(HttpStatus.OK, "강의 상세 조회에 성공했습니다."),
 
 
     /**

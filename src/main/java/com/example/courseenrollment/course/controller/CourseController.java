@@ -34,4 +34,9 @@ public class CourseController {
     public ResponseEntity<ApiResponse<List<GetCourseListResponse>>> getCourses(@RequestParam(required = false) CourseStatus status) {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.GET_COURSE_LIST_SUCCESS, courseService.getCourses(status)));
     }
+
+    @GetMapping("/{courseId}")
+    public ResponseEntity<ApiResponse<GetCourseDetailResponse>> getCourse(@PathVariable Long courseId) {
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.GET_COURSE_DETAIL_SUCCESS, courseService.getCourse(courseId)));
+    }
 }
