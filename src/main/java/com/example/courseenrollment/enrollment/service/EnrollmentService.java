@@ -12,16 +12,18 @@ import com.example.courseenrollment.enrollment.dto.GetMyEnrollmentListResponse;
 import com.example.courseenrollment.enrollment.repository.EnrollmentRepository;
 import com.example.courseenrollment.global.exception.CustomException;
 import com.example.courseenrollment.global.exception.ErrorType;
+import com.example.courseenrollment.global.response.PageResponse;
 import com.example.courseenrollment.user.domain.User;
 import com.example.courseenrollment.user.domain.UserRole;
 import com.example.courseenrollment.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -134,7 +136,7 @@ public class EnrollmentService {
     }
 
     @Transactional(readOnly = true)
-    public List<GetMyEnrollmentListResponse> getMyEnrollments(Long userId) {
+    public PageResponse<GetMyEnrollmentListResponse> getMyEnrollments(Long userId, Pageable pageable) {
         User student = userRepository.findById(userId)
                            .orElseThrow(() -> new CustomException(ErrorType.USER_NOT_FOUND));
 
@@ -142,20 +144,20 @@ public class EnrollmentService {
             throw new CustomException(ErrorType.ENROLLMENT_LIST_GET_FORBIDDEN);
         }
 
-        List<Enrollment> enrollments = enrollmentRepository.findAllByStudentIdOrderByCreatedAtDesc(userId);
+        Page<GetMyEnrollmentListResponse> enrollments =
+            enrollmentRepository.findAllByStudentIdOrderByCreatedAtDesc(userId, pageable)
+                .map(enrollment -> new GetMyEnrollmentListResponse(
+                    enrollment.getId(),
+                    enrollment.getCourse().getId(),
+                    enrollment.getCourse().getTitle(),
+                    enrollment.getCourse().getPrice(),
+                    enrollment.getStatus(),
+                    enrollment.getCreatedAt(),
+                    enrollment.getConfirmedAt(),
+                    enrollment.getCancelledAt()
+                ));
 
-        return enrollments.stream()
-                   .map(enrollment -> new GetMyEnrollmentListResponse(
-                       enrollment.getId(),
-                       enrollment.getCourse().getId(),
-                       enrollment.getCourse().getTitle(),
-                       enrollment.getCourse().getPrice(),
-                       enrollment.getStatus(),
-                       enrollment.getCreatedAt(),
-                       enrollment.getConfirmedAt(),
-                       enrollment.getCancelledAt()
-                   ))
-                   .toList();
+        return PageResponse.from(enrollments);
     }
 
     // 취소 가능 기간인지 검증
