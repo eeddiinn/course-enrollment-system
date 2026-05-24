@@ -12,3 +12,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+app:
+  enrollment:
+    cancel-available-days: 7

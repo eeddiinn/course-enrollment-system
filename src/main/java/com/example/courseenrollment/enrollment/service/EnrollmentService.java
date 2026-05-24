@@ -5,6 +5,7 @@ import com.example.courseenrollment.course.domain.CourseStatus;
 import com.example.courseenrollment.course.repository.CourseRepository;
 import com.example.courseenrollment.enrollment.domain.Enrollment;
 import com.example.courseenrollment.enrollment.domain.EnrollmentStatus;
+import com.example.courseenrollment.enrollment.dto.CancelEnrollmentResponse;
 import com.example.courseenrollment.enrollment.dto.ConfirmEnrollmentResponse;
 import com.example.courseenrollment.enrollment.dto.CreateEnrollmentResponse;
 import com.example.courseenrollment.enrollment.repository.EnrollmentRepository;
@@ -14,6 +15,7 @@ import com.example.courseenrollment.user.domain.User;
 import com.example.courseenrollment.user.domain.UserRole;
 import com.example.courseenrollment.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,9 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class EnrollmentService {
+
+    @Value("${app.enrollment.cancel-available-days}")
+    private int cancelAvailableDays;
 
     private final EnrollmentRepository enrollmentRepository;
     private final CourseRepository courseRepository;
@@ -88,5 +93,50 @@ public class EnrollmentService {
         enrollment.confirm(LocalDateTime.now());
 
         return new ConfirmEnrollmentResponse(enrollment.getId(), enrollment.getStatus());
+    }
+
+    @Transactional
+    public CancelEnrollmentResponse cancelEnrollment(Long userId, Long enrollmentId) {
+        User student = userRepository.findById(userId)
+                           .orElseThrow(() -> new CustomException(ErrorType.USER_NOT_FOUND));
+
+        if (student.getRole() != UserRole.STUDENT) {
+            throw new CustomException(ErrorType.ENROLLMENT_CANCEL_FORBIDDEN);
+        }
+
+        Enrollment enrollment = enrollmentRepository.findByIdWithLock(enrollmentId)
+                                    .orElseThrow(() -> new CustomException(ErrorType.ENROLLMENT_NOT_FOUND));
+
+        if (!enrollment.getStudent().getId().equals(userId)) {
+            throw new CustomException(ErrorType.ENROLLMENT_CANCEL_FORBIDDEN);
+        }
+
+        if (enrollment.getStatus() == EnrollmentStatus.CANCELLED) {
+            throw new CustomException(ErrorType.ENROLLMENT_ALREADY_CANCELLED);
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+
+        if (enrollment.getStatus() == EnrollmentStatus.CONFIRMED) {
+            validateCancelPeriod(enrollment, now);
+        }
+
+        Course course = courseRepository.findByIdWithLock(enrollment.getCourse().getId())
+                            .orElseThrow(() -> new CustomException(ErrorType.COURSE_NOT_FOUND));
+
+        enrollment.cancel(now);
+
+        course.decreaseEnrolledCount();
+
+        return new CancelEnrollmentResponse(enrollment.getId(), enrollment.getStatus());
+    }
+
+    // 취소 가능 기간인지 검증
+    private void validateCancelPeriod(Enrollment enrollment, LocalDateTime now) {
+        LocalDateTime cancelDeadline = enrollment.getConfirmedAt().plusDays(cancelAvailableDays);
+
+        if (now.isAfter(cancelDeadline)) {
+            throw new CustomException(ErrorType.ENROLLMENT_CANCEL_PERIOD_EXPIRED);
+        }
     }
 }

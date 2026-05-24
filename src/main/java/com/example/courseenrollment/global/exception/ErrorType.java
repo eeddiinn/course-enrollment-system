@@ -15,6 +15,8 @@ public enum ErrorType {
     REQUEST_VALIDATION_EXCEPTION(HttpStatus.BAD_REQUEST, "요청 값이 올바르지 않습니다."),
     INVALID_COURSE_STATUS(HttpStatus.BAD_REQUEST, "올바르지 않은 강의 상태입니다."),
     COURSE_NOT_OPEN(HttpStatus.BAD_REQUEST, "수강 신청 가능한 강의가 아닙니다."),
+    ENROLLMENT_ALREADY_CANCELLED(HttpStatus.BAD_REQUEST, "이미 취소된 수강 신청입니다."),
+    ENROLLMENT_CANCEL_PERIOD_EXPIRED(HttpStatus.BAD_REQUEST, "취소 가능 기간이 지났습니다."),
 
     /**
      * HTTP 403 (FORBIDDEN)
@@ -23,6 +25,7 @@ public enum ErrorType {
     COURSE_STATUS_CHANGE_FORBIDDEN(HttpStatus.FORBIDDEN, "강의 상태 변경 권한이 없습니다."),
     ENROLLMENT_CREATE_FORBIDDEN(HttpStatus.FORBIDDEN, "수강 신청 권한이 없습니다."),
     ENROLLMENT_CONFIRM_FORBIDDEN(HttpStatus.FORBIDDEN, "결제 확정 권한이 없습니다."),
+    ENROLLMENT_CANCEL_FORBIDDEN(HttpStatus.FORBIDDEN, "수강 신청 취소 권한이 없습니다."),
 
     /**
      * HTTP 404 (NOT FOUND)

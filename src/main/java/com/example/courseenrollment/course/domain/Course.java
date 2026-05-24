@@ -68,4 +68,10 @@ public class Course extends BaseTimeEntity {
     public void increaseEnrolledCount() {
         this.enrolledCount++;
     }
+
+    public void decreaseEnrolledCount() {
+        if (this.enrolledCount > 0) {
+            this.enrolledCount--;
+        }
+    }
 }
